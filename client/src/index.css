@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::after,
+*::before{
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+  background-color: #0f172a;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: -0.5px;
+  color: white
+}
+
+li {
+  cursor: pointer;
+}
+
+input {
+  color: #0f172a;
+}
+
+.container{
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.nav > ul > li + li{
+  margin-left: 20px;
+}
+
+.login{
+  height: calc(100vh - 80px);
+}
+
+.login input {
+  width: 300px;
+  height: 30px;
+  margin-top: 20px;
+  padding: 5px;
+  outline: none;
+}
+
+.login .label{
+  position: absolute;
+  top: -8px;
+  left: 0;
+  font-size: 18px;
+  color: white;
+}
+
+.login .error{
+  position: absolute;
+  /* bottom: 0px; */
+  left: 0;
+  font-size: 14px;
+  color: red;
+}

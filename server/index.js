@@ -1,0 +1,110 @@
+const express = require('express');
+const cors = require('cors')
+const bodyParser = require('body-parser');
+const app = express();
+const PORT = 3005
+
+app.use(cors())
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  }),
+);
+
+// Захардкорюємо новини
+let news = [
+  {
+      "id": 0,
+      "author": "finance.yahoo.com",
+      "category": "tesla",
+      "title": "Electric vehicles are hitting a road block: Car dealers",
+      "description": "As news started coming out about electric cars in early 2016, Michael Young, a self-described \"car guy,\" knew he wanted to try one. One afternoon, he strolled into his local dealership and asked to test drive the BMW i3, a small, sporty car with a range of up…",
+      "url": "https://biztoc.com/x/ad98ace26d694bb0",
+      "urlToImage": "https://c.biztoc.com/p/ad98ace26d694bb0/og.webp",
+      "publishedAt": "2023-11-11T15:22:07Z",
+      "content": "As news started coming out about electric cars in early 2016, Michael Young, a self-described \"car guy,\" knew he wanted to try one. One afternoon, he strolled into his local dealership and asked to t… [+294 chars]"
+  },
+  {
+      "id": 1,
+      "author": "Justin Kahn",
+      "category": "tesla",
+      "title": "Emporia’s 9to5 favorite Level 2 EV Charger drops down to $300 shipped (Reg. $399+)",
+      "description": "The official Woot Amazon storefront is now offering the Emporia Level 2 EV Charger for $299.99 shipped. Regularly $399 and sometimes as much as $500 or more, this is at least $99 off the going rate at Amazon and the lowest price we can find. Today’s deal is a…",
+      "url": "https://9to5toys.com/2023/11/11/emporias-9to5-favorite-level-2-ev-charger-drops-down-to-300-shipped-reg-399/",
+      "urlToImage": "https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2023/11/Emporia-Level-2-EV-Charger.jpeg?resize=1200%2C628&ssl=1",
+      "publishedAt": "2023-11-11T14:14:14Z",
+      "content": "The official Woot Amazon storefront is now offering the Emporia Level 2 EV Charger for $299.99 shipped. Regularly $399 and sometimes as much as $500 or more, this is at least $99 off the going rate a… [+1405 chars]"
+  },
+  {
+      "id": 2,
+      "author": "The New York Times News Service Syndicate",
+      "category": "tesla",
+      "title": "Vermont utility plans to end outages by giving customers batteries",
+      "description": "A Vermont utility is proposing a different approach: It wants to install batteries at most homes to make sure its customers never go without electricity.",
+      "url": "https://www.denverpost.com/2023/11/11/vermont-utility-plans-to-end-outages-by-giving-customers-batteries-3/",
+      "urlToImage": "https://www.denverpost.com/wp-content/uploads/2023/11/unnamed-file-168.jpg?w=1024&h=682",
+      "publishedAt": "2023-11-11T13:00:00Z",
+      "content": "Many electric utilities are putting up lots of new power lines as they rely more on renewable energy and try to make grids more resilient in bad weather. But a Vermont utility is proposing a differen… [+6694 chars]"
+  },
+  {
+      "id": 3,
+      "author": "Jessica Kanzler",
+      "category": "apple",
+      "title": "This 6th-Gen iPad Is $150 Right Now",
+      "description": "This Apple iPad 6th-generation is on sale for $149 right now (reg. $250). It comes with a grade “B” refurbished rating, so there might be light scuffs or scratches on the body, but none on the screen. It has a 9.7-inch Retina display with 2048x1536 resolution…",
+      "url": "https://lifehacker.com/this-6th-gen-ipad-is-150-right-now-1851004389",
+      "urlToImage": "https://i.kinja-img.com/image/upload/c_fill,h_675,pg_1,q_80,w_1200/561095ec5695fabe44e5574c632a9187.png",
+      "publishedAt": "2023-11-10T13:00:00Z",
+      "content": "This Apple iPad 6th-generation is on sale for $149 right now (reg. $250). It comes with a grade B refurbished rating, so there might be light scuffs or scratches on the body, but none on the screen. … [+391 chars]"
+  },
+  {
+      "id": 4,
+      "author": "leslie Josephs",
+      "category": "business",
+      "title": "$29 flights are back as airlines race to fill seats in the off-season - CNBC",
+      "description": "Airlines have cut fares on many routes to fill seats as capacity rises during the off-season.",
+      "url": "https://www.cnbc.com/2023/11/11/flight-discounts-are-back.html",
+      "urlToImage": "https://image.cnbcfm.com/api/v1/image/107012599-1644341033979-fronti.jpg?v=1644341116&w=1920&h=1080",
+      "publishedAt": "2023-11-11T13:00:01Z",
+      "content": "A Frontier Airlines airplane taxis past a Spirit Airlines aircraft at Indianapolis International Airport in Indianapolis, Indiana.\r\nFORT WORTH, Texas Airlines have a record 260 million seats to fill … [+6121 chars]"
+  }
+];
+
+// Рішення маршрутів
+app.get('/news', (req, res) => {
+  res.send(news);
+});
+
+app.get('/news/:id', (req, res) => {
+  const newsItem = news.find((item) => item.id === parseInt(req.params.id));
+  if (!newsItem) {
+    res.status(404).send('Новина не знайдена');
+  } else {
+    res.send(newsItem);
+  }
+});
+
+// Удаление
+app.delete('/news/:id', (req, res) => {
+  try {
+        news = news.filter(item => item.id !== +req.params.id);
+        res.send({ msg: 'success' });
+    } catch (err) {
+        res.status(500).json({ msg: err })
+    }
+});
+
+// Добавление
+app.post('/news', (req, res) => {
+    try {
+        news.push({...req.body, id: Math.max(...news.map(item => item.id)) + 1});
+        res.send({ msg: 'success' });
+    } catch (err) {
+        res.status(500).json({ msg: err })
+    }
+});
+
+app.listen(PORT, () => {
+  console.log('Сервер запущено на порту' + PORT);
+});

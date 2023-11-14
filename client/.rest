@@ -1,0 +1,10 @@
+POST https://jsonplaceholder.typicode.com/users HTTP/1.1
+{
+    "usename": "test",
+    "password": "12345678"
+}
+
+
+###
+
+GET https://jsonplaceholder.typicode.com/users 
